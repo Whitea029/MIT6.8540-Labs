@@ -14,6 +14,47 @@ import "strconv"
 // and reply for an RPC.
 //
 
+const (
+	MapTask    = "map"
+	ReduceTask = "reduce"
+	ExitTask   = "exit"
+	WaitTask   = "wait"
+)
+
+const (
+	Idle       = "idle"
+	InProgress = "in-progress"
+	Completed  = "completed"
+)
+
+type GetTaskArgs struct {
+	WorkerID int
+}
+
+type GetTaskReply struct {
+	// map
+	TaskID   int
+	TaskType string
+	FileName string
+
+	// reduce
+	MapTaskNum    int // number of map tasks
+	ReduceTaskNum int // index of reduce task
+	NReduce       int // number of reduce tasks, also can be unstandend as the size of the reduce task bucket
+}
+
+// 汇报任务状态
+type ReportTaskArgs struct {
+	TaskID    int
+	TaskType  string
+	WorkerID  int
+	Completed bool
+}
+
+type ReportTaskReply struct {
+	OK bool
+}
+
 type ExampleArgs struct {
 	X int
 }
@@ -23,7 +64,6 @@ type ExampleReply struct {
 }
 
 // Add your RPC definitions here.
-
 
 // Cook up a unique-ish UNIX-domain socket name
 // in /var/tmp, for the coordinator.
