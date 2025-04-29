@@ -131,6 +131,14 @@ func (rf *Raft) persist() {
 	rf.persister.Save(rf.encodeState(), nil)
 }
 
+// 上层使用
+// 判断当前 term 是否有 log
+func (rf *Raft) HasLogInCurrentTerm() bool {
+	rf.mu.RLock()
+	defer rf.mu.RUnlock()
+	return rf.getLastLog().Term == rf.currentTerm
+}
+
 // restore previously persisted state.
 func (rf *Raft) readPersist(data []byte) {
 	if data == nil || len(data) < 1 { // bootstrap without any state?
